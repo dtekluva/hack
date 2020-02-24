@@ -3,6 +3,7 @@ from . models import *
 
 # Register your models here.
 admin.site.register(Data_set)
+admin.site.register(Project)
 
 
 

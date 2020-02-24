@@ -1,4 +1,4 @@
-"""hack URL Configuration
+"""flemmer URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.0/topics/http/urls/
@@ -15,8 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from main import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('main.urls'))
+    path('', views.index, name='index'),
+    path('project_list', views.project_list, name='project_list'),
+    path('lga_list', views.lga_list, name='lga_list'),
+    path('project_column_list', views.project_column_list, name='project_column_list'),
+    path('compute_columns', views.compute_columns, name='compute_columns'),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

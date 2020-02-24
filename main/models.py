@@ -1,4 +1,7 @@
 from django.db import models
+import datetime, requests, os, pandas as pd
+from django.core.files import File
+from hack.settings import BASE_DIR
 
 # Create your models here.
 
@@ -108,3 +111,104 @@ class Data_set(models.Model):
     _submission_time = models.CharField(max_length=200, null=True, blank = True)
     _validation_status = models.FloatField(null=True, blank = True)
     _index = models.IntegerField(null=True, blank = True)
+
+class Project(models.Model):
+    title      = models.CharField( max_length = 200)
+    data_url   = models.CharField( max_length = 200, blank = True, null = True)
+    date       = models.DateTimeField(blank = True, null = True)
+    data       =  models.FileField(upload_to = 'datasets/',blank=False,null=True)
+
+    # def save_image(self, *args, **kwargs):
+
+    #     super( Project, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+    def set_date_added(self):
+        self.date = datetime.datetime.now()
+        self.save()
+    
+    def set_data_url(self, url):
+        self.data_url = url
+        self.save()
+    
+    def add_data_set(self):
+
+
+        headers = {'content-type': 'application/json', 'Authorization':'Token bcc979086ef1de7e787427fd1827abff776e1cd3'}
+        response = requests.get(f"{self.data_url}.csv", headers = headers)
+
+        selected_title = self.title.replace("\\", "_").replace("/", "_")
+        open( file = f'{selected_title}.csv', mode = 'wb').write(response.content)
+
+        data_file = open( file = f'{selected_title}.csv', mode = 'rb')
+        self.data = File(data_file)
+        self.save()
+
+        data_file.close()
+
+
+    def get_lga_for_state(self, state = False):
+
+        try:
+            data = pd.read_csv(self.data)
+            
+            for column in data.columns:
+                if state.lower() in column.lower():
+                    selected_lga = column
+
+            state_data = data[(data["group_ic4fq86/STATE"] == state)]
+            state_lga = state_data[selected_lga]
+
+            return state_lga.unique()
+            
+        except NameError:
+            return []
+
+    def get_data_columns(self, state = False):
+
+        try:
+            data = pd.read_csv(self.data)
+
+            return data.columns
+            
+        except NameError:
+            return []
+
+    def compute_columns(self, state = False, lga = False, col1 = False, col2 = False, col3 = False):
+
+        try:
+            data = pd.read_csv(self.data)
+            if state and lga and col1  and not col2 and not col3:
+
+                for column in data.columns:
+                    if state.lower() in column.lower():
+                        selected_lga = column
+
+            state_data = data[(data["group_ic4fq86/STATE"] == state)]
+            state_lga = state_data[state_data[selected_lga] == lga]
+
+            distribution = []
+            count   = []
+            mean    = []
+            minimum = []
+            maximum = []
+
+
+            if "object" in str(data[col1].dtype):
+
+                distribution = state_lga[col1].value_counts().to_json()
+                count   = int(state_lga[col1].count())
+
+            else:
+                
+                count   = int(state_lga[col1].count())
+                mean    = int(state_lga[col1].mean())
+                minimum = int(state_lga[col1].min())
+                maximum = int(state_lga[col1].max())
+
+            return  {"distribution" : distribution , "count" : count, "mean" : mean , "minimum" : minimum, "maximum" : maximum }
+
+        except NameError:
+            return []

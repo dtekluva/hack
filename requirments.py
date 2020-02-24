@@ -1,13 +1,8 @@
 asgiref==3.2.3
-certifi==2019.11.28
-chardet==3.0.4
 Django==3.0.3
-idna==2.9
 numpy==1.18.1
 pandas==1.0.1
 python-dateutil==2.8.1
 pytz==2019.3
-requests==2.23.0
 six==1.14.0
 sqlparse==0.3.0
-urllib3==1.25.8
