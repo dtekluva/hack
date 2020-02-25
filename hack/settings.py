@@ -25,7 +25,7 @@ SECRET_KEY = 'i9%4(32mwkrtl#rkhlqmf!iqjgo18_a+%o^9zra@wo)&g*itqz'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [ "64.227.114.69"]
+ALLOWED_HOSTS = [ "64.227.114.69", "localhost", 'data4gov.pythonanywhere.com']
 
 
 # Application definition
