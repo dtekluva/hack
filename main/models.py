@@ -178,37 +178,119 @@ class Project(models.Model):
 
     def compute_columns(self, state = False, lga = False, col1 = False, col2 = False, col3 = False):
 
+        data = pd.read_csv(self.data)
+
+        print(col1, col2, col3)
         try:
-            data = pd.read_csv(self.data)
-            if state and lga and col1  and not col2 and not col3:
+            if state and lga == "all": # IF STATE DATA IS SENT AS ALL 
+                print('ALL STATE COLUMN PLOT CURRENTLY WORKING \n\n')
+                values = self.two_col_plot_all(data, state , col1, col2)
 
-                for column in data.columns:
-                    if state.lower() in column.lower():
-                        selected_lga = column
+            elif state and lga and col1  and not col2 and not col3: # IF ONLY ONE COLUMN SELECTED
+                print('ONE COLUMN PLOT CURRENTLY WORKING \n\n')
+                values = self.one_col_plot(data, state , lga , col1)
 
-            state_data = data[(data["group_ic4fq86/STATE"] == state)]
-            state_lga = state_data[state_data[selected_lga] == lga]
+            elif state and lga and col1  and col2 and not col3: # IF TWO COLUMNS SELECTED
+                print('TWO COLUMN PLOT CURRENTLY WORKING \n\n')
+                values = self.two_col_plot(data, state , lga , col1, col2)
+            
+            elif True:
+                pass
 
-            distribution = []
-            count   = []
-            mean    = []
-            minimum = []
-            maximum = []
+            return values
 
-
-            if "object" in str(data[col1].dtype):
-
-                distribution = state_lga[col1].value_counts().to_json()
-                count   = int(state_lga[col1].count())
-
-            else:
-                
-                count   = int(state_lga[col1].count())
-                mean    = int(state_lga[col1].mean())
-                minimum = int(state_lga[col1].min())
-                maximum = int(state_lga[col1].max())
-
-            return  {"distribution" : distribution , "count" : count, "mean" : mean , "minimum" : minimum, "maximum" : maximum }
-
-        except NameError:
+        except TypeError:
             return []
+
+    def one_col_plot(self, data, state, lga , col1):
+
+        for column in list(data.columns):
+
+            if state.lower() in column.lower():
+                selected_lga = column
+
+        state_data = data[(data["group_ic4fq86/STATE"] == state)]
+        state_lga = state_data[state_data[selected_lga] == lga]
+
+        distribution = []
+        count   = []
+        mean    = []
+        minimum = []
+        maximum = []
+
+
+        if "object" in str(data[col1].dtype):
+
+            distribution = state_lga[col1].value_counts().to_json()
+            count   = int(state_lga[col1].count())
+
+        else:
+            
+            count   = int(state_lga[col1].count())
+            mean    = int(state_lga[col1].mean())
+            minimum = int(state_lga[col1].min())
+            maximum = int(state_lga[col1].max())
+
+        return  {"distribution" : distribution , "count" : count, "mean" : mean , "minimum" : minimum, "maximum" : maximum }
+
+    def two_col_plot(self, data, state, lga , col1, col2):
+
+        for column in list(data.columns):
+
+            if state.lower() in column.lower():
+                selected_lga = column
+
+
+        state_data = data[(data["group_ic4fq86/STATE"] == state)]
+        state_lga = state_data[state_data[selected_lga] == lga]
+
+        distribution = []
+        count   = []
+        mean    = []
+        minimum = []
+        maximum = []
+
+
+        if "object" in str(data[col1].dtype):
+
+            stats = pd.crosstab(state_lga[col1], state_lga[col2])
+
+            distribution = stats.to_json()
+            count   = int(state_lga[col1].count())
+
+        else:
+            
+            count   = int(state_lga[col1].count())
+            mean    = int(state_lga[col1].mean())
+            minimum = int(state_lga[col1].min())
+            maximum = int(state_lga[col1].max())
+
+        return  {"distribution" : distribution , "count" : count, "mean" : mean , "minimum" : minimum, "maximum" : maximum }
+
+    def two_col_plot_all(self, data, state, col1, col2):
+
+        # if not state == "all":
+        #     data = data[data["group_ic4fq86/STATE"] == state]
+
+        distribution = []
+        count   = []
+        mean    = []
+        minimum = []
+        maximum = []
+
+
+        if "object" in str(data[col1].dtype):
+
+            stats = pd.crosstab(data[col1], data[col2])
+
+            distribution = stats.to_json()
+            count   = int(data[col1].count())
+
+        else:
+            
+            count   = int(data[col1].count())
+            mean    = int(data[col1].mean())
+            minimum = int(data[col1].min())
+            maximum = int(data[col1].max())
+
+        return  {"distribution" : distribution , "count" : count, "mean" : mean , "minimum" : minimum, "maximum" : maximum }

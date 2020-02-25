@@ -77,7 +77,7 @@ def compute_columns(request):
         columns = Project.objects.get(title = project_title).compute_columns(state, lga, col1, col2, col3)
     
         resp = (json.dumps({"response": {"task_successful": True, "content": {
-                                "code": http_codes["OK"], "LGAs": columns, "message": ""}, "auth_keys": {"access_token": "NULL"}}}))
+                                "code": http_codes["OK"], "data": columns, "message": ""}, "auth_keys": {"access_token": "NULL"}}}))
 
         return CORS(resp).allow_all()   
             
