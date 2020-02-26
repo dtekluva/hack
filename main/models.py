@@ -227,7 +227,7 @@ class Project(models.Model):
             count   = int(state_lga[col1].count())
 
         else:
-            
+            state_lga = state_lga.dropna()
             count   = int(state_lga[col1].count())
             mean    = int(state_lga[col1].mean())
             minimum = int(state_lga[col1].min())
@@ -268,7 +268,7 @@ class Project(models.Model):
             count   = int(state_lga[col1].count())
 
         else:
-            
+            state_lga = state_lga.dropna()
             count   = int(state_lga[col1].count())
             mean    = int(state_lga[col1].mean())
             minimum = int(state_lga[col1].min())
@@ -303,7 +303,7 @@ class Project(models.Model):
             count   = int(data[col1].count())
 
         else:
-            
+            state_lga = state_lga.dropna()
             count   = int(data[col1].count())
             mean    = int(data[col1].mean())
             minimum = int(data[col1].min())
