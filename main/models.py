@@ -170,6 +170,8 @@ class Project(models.Model):
 
         try:
             data = pd.read_csv(self.data)
+            data = data.drop(["group_ic4fq86/STATE",	"LGABAYELSA",	"LGADELTA",	"LGAEDO",	"LGARIVERS"
+])
 
             return data.columns
             
@@ -251,9 +253,16 @@ class Project(models.Model):
         maximum = []
 
 
-        if "object" in str(data[col1].dtype):
+        if "object" in str(data[col1].dtype) and "object" in str(data[col2].dtype):
 
             stats = pd.crosstab(state_lga[col1], state_lga[col2])
+
+            distribution = stats.to_json()
+            count   = int(state_lga[col1].count())
+        
+        elif "object" in str(data[col1].dtype) and "int" in str(data[col2].dtype):
+
+            stats = pd.groupby(state_lga[col1]).sum()[col2]
 
             distribution = stats.to_json()
             count   = int(state_lga[col1].count())
@@ -286,6 +295,13 @@ class Project(models.Model):
             distribution = stats.to_json()
             count   = int(data[col1].count())
 
+        elif "object" in str(data[col1].dtype) and "int" in str(data[col2].dtype):
+
+            stats = pd.groupby(data[col1]).sum()[col2]
+
+            distribution = stats.to_json()
+            count   = int(data[col1].count())
+
         else:
             
             count   = int(data[col1].count())
@@ -294,3 +310,5 @@ class Project(models.Model):
             maximum = int(data[col1].max())
 
         return  {"distribution" : distribution , "count" : count, "mean" : mean , "minimum" : minimum, "maximum" : maximum }
+
+    
