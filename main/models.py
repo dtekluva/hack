@@ -150,7 +150,7 @@ class Project(models.Model):
 
 
     def get_lga_for_state(self, state = False):
-
+        #for commit
         try:
             data = pd.read_csv(self.data)
             
