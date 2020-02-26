@@ -158,7 +158,7 @@ class Project(models.Model):
                 if state.lower() in column.lower():
                     selected_lga = column
 
-            state_data = data[(data["group_ic4fq86/STATE"] == state)]
+            state_data = data[(data["STATE"] == state)]
             state_lga = state_data[selected_lga]
 
             return state_lga.unique()
@@ -170,7 +170,7 @@ class Project(models.Model):
 
         try:
             data = pd.read_csv(self.data)
-            data = data.drop(["group_ic4fq86/STATE",	"LGABAYELSA",	"LGADELTA",	"LGAEDO",	"LGARIVERS"
+            data = data.drop(["STATE",	"LGABAYELSA",	"LGADELTA",	"LGAEDO",	"LGARIVERS"
 ], axis = 1)
 
             return data.columns
@@ -211,7 +211,7 @@ class Project(models.Model):
             if state.lower() in column.lower():
                 selected_lga = column
 
-        state_data = data[(data["group_ic4fq86/STATE"] == state)]
+        state_data = data[(data["STATE"] == state)]
         state_lga = state_data[state_data[selected_lga] == lga]
 
         distribution = []
@@ -243,7 +243,7 @@ class Project(models.Model):
                 selected_lga = column
 
 
-        state_data = data[(data["group_ic4fq86/STATE"] == state)]
+        state_data = data[(data["STATE"] == state)]
         state_lga = state_data[state_data[selected_lga] == lga]
 
         distribution = []
@@ -279,7 +279,7 @@ class Project(models.Model):
     def two_col_plot_all(self, data, state, col1, col2):
 
         # if not state == "all":
-        #     data = data[data["group_ic4fq86/STATE"] == state]
+        #     data = data[data["STATE"] == state]
 
         distribution = []
         count   = []
