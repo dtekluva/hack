@@ -170,8 +170,7 @@ class Project(models.Model):
 
         try:
             data = pd.read_csv(self.data)
-            data = data.drop(["STATE",	"LGABAYELSA",	"LGADELTA",	"LGAEDO",	"LGARIVERS"
-], axis = 1)
+            data = data.drop(["STATE",	"LGABAYELSA",	"LGADELTA",	"LGAEDO",	"LGARIVERS"], axis = 1)
 
             return data.columns
             
