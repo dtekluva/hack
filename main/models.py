@@ -229,10 +229,10 @@ class Project(models.Model):
         else:
             try:
                 # state_lga = state_lga.dropna()
-                count   = int(state_lga[col1].count())
-                mean    = int(state_lga[col1].mean())
-                minimum = int(state_lga[col1].min())
-                maximum = int(state_lga[col1].max())
+                count   = int(state_lga[col1].astype('int32').count())
+                mean    = int(state_lga[col1].astype('int32').mean())
+                minimum = int(state_lga[col1].astype('int32').min())
+                maximum = int(state_lga[col1].astype('int32').max())
             except:
                 distribution = {}
                 count   = []
@@ -260,27 +260,24 @@ class Project(models.Model):
         minimum = []
         maximum = []
 
-
-        if "object" in str(data[col1].dtype) and "object" in str(data[col2].dtype):
+        if "object" in str(data[col1].dtype)  and "object" in str(data[col2].dtype):
 
             stats = pd.crosstab(state_lga[col1], state_lga[col2])
 
             distribution = stats.to_json()
             count   = int(state_lga[col1].count())
         
-        elif "object" in str(data[col1].dtype) and "int" in str(data[col2].dtype):
-
-            stats = pd.groupby(state_lga[col1]).sum()[col2]
+        elif "object" in str(data[col1].dtype) and ("int" in str(data[col2].dtype) or "float" in str(data[col2].dtype)):
+            stats = state_lga.groupby(state_lga[col1]).sum()[col2]
 
             distribution = stats.to_json()
             count   = int(state_lga[col1].count())
 
         else:
-            state_lga = state_lga.dropna()
-            count   = int(state_lga[col1].count())
-            mean    = int(state_lga[col1].mean())
-            minimum = int(state_lga[col1].min())
-            maximum = int(state_lga[col1].max())
+            count   = int(state_lga[col1].astype('int32').count())
+            mean    = int(state_lga[col1].astype('int32').mean())
+            minimum = int(state_lga[col1].astype('int32').min())
+            maximum = int(state_lga[col1].astype('int32').max())
 
         return  {"distribution" : distribution , "count" : count, "mean" : mean , "minimum" : minimum, "maximum" : maximum }
 
@@ -305,17 +302,16 @@ class Project(models.Model):
 
         elif "object" in str(data[col1].dtype) and "int" in str(data[col2].dtype):
 
-            stats = pd.groupby(data[col1]).sum()[col2]
+            stats = data.groupby(data[col1]).sum()[col2]
 
             distribution = stats.to_json()
             count   = int(data[col1].count())
 
         else:
-            state_lga = state_lga.dropna()
-            count   = int(data[col1].count())
-            mean    = int(data[col1].mean())
-            minimum = int(data[col1].min())
-            maximum = int(data[col1].max())
+            count   = int(data[col1].astype('int32').count())
+            mean    = int(data[col1].astype('int32').mean())
+            minimum = int(data[col1].astype('int32').min())
+            maximum = int(data[col1].astype('int32').max())
 
         return  {"distribution" : distribution , "count" : count, "mean" : mean , "minimum" : minimum, "maximum" : maximum }
 
