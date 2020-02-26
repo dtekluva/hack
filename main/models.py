@@ -214,7 +214,7 @@ class Project(models.Model):
         state_data = data[(data["STATE"] == state)]
         state_lga = state_data[state_data[selected_lga] == lga]
 
-        distribution = []
+        distribution = {}
         count   = []
         mean    = []
         minimum = []
@@ -227,11 +227,19 @@ class Project(models.Model):
             count   = int(state_lga[col1].count())
 
         else:
-            state_lga = state_lga.dropna()
-            count   = int(state_lga[col1].count())
-            mean    = int(state_lga[col1].mean())
-            minimum = int(state_lga[col1].min())
-            maximum = int(state_lga[col1].max())
+            try:
+                # state_lga = state_lga.dropna()
+                count   = int(state_lga[col1].count())
+                mean    = int(state_lga[col1].mean())
+                minimum = int(state_lga[col1].min())
+                maximum = int(state_lga[col1].max())
+            except:
+                distribution = {}
+                count   = []
+                mean    = []
+                minimum = []
+                maximum = []
+
 
         return  {"distribution" : distribution , "count" : count, "mean" : mean , "minimum" : minimum, "maximum" : maximum }
 
@@ -246,7 +254,7 @@ class Project(models.Model):
         state_data = data[(data["STATE"] == state)]
         state_lga = state_data[state_data[selected_lga] == lga]
 
-        distribution = []
+        distribution = {}
         count   = []
         mean    = []
         minimum = []
@@ -281,7 +289,7 @@ class Project(models.Model):
         # if not state == "all":
         #     data = data[data["STATE"] == state]
 
-        distribution = []
+        distribution = {}
         count   = []
         mean    = []
         minimum = []
